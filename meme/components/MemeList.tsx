@@ -9,7 +9,6 @@ import {
   Modal,
   ModalContent,
   ModalBody,
-  Link,
   useDisclosure,
 } from "@heroui/react";
 import Cookies from "js-cookie";
@@ -25,7 +24,7 @@ function MemeList() {
   const [memes, setMemes] = useState<Meme[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const [isLinkClicked, setIsLinkClicked] = useState(false); // State to prevent double clicks
   useEffect(() => {
     const savedMemes = Cookies.get("memes");
     if (savedMemes) {
@@ -38,7 +37,19 @@ function MemeList() {
     onOpen();
   };
 
-  const isExternalUrl = (path: string) => /^https?:\/\//.test(path);
+  const isExternalUrl = (path: string) =>
+    /^https?:\/\//.test(path) && !path.startsWith("data:image/");
+
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    url: string
+  ) => {
+    if (isLinkClicked) return;
+    setIsLinkClicked(true);
+    e.preventDefault();
+    window.open(url, "_blank", "noopener,noreferrer");
+    setTimeout(() => setIsLinkClicked(false), 1000);
+  };
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -47,35 +58,45 @@ function MemeList() {
           <CardHeader>
             <p className="text-lg font-bold">{meme.name}</p>
           </CardHeader>
-          <CardBody>
+          <CardBody className="flex justify-center items-center">
             <Image
               src={meme.image}
               alt={meme.name}
-              className="w-full h-48 object-cover cursor-pointer"
+              className="w-full h-48 object-contain cursor-pointer"
               onClick={() => openImageModal(meme.image)}
             />
           </CardBody>
           <CardFooter className="flex justify-between">
             <p>Лайки: {meme.likes}</p>
             {isExternalUrl(meme.image) ? (
-              <Link href={meme.image} isExternal>
+              <a
+                href={meme.image}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline"
+                onClick={(e) => handleLinkClick(e, meme.image)}
+              >
                 Review
-              </Link>
+              </a>
             ) : (
-              <p className="text-primary">Local image</p>
+              <p className="text-primary">
+                {meme.image.startsWith("data:image/")
+                  ? "Uploaded image"
+                  : "Local image"}
+              </p>
             )}
           </CardFooter>
         </Card>
       ))}
 
       <Modal isOpen={isOpen} onClose={onClose} size="full">
-        <ModalContent>
-          <ModalBody className="flex items-center justify-center p-0">
+        <ModalContent className="h-screen overflow-hidden">
+          <ModalBody className="flex items-center justify-center p-0 h-full overflow-hidden">
             {selectedImage && (
               <Image
                 src={selectedImage}
                 alt="Full screen meme"
-                className="max-w-full max-h-screen object-contain"
+                className="max-w-full max-h-full object-contain"
               />
             )}
           </ModalBody>

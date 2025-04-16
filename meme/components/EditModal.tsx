@@ -1,14 +1,13 @@
 "use client";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Input,
   Button,
-  useDisclosure,
+  Input,
 } from "@heroui/react";
 
 interface Meme {
@@ -23,7 +22,7 @@ interface EditModalProps {
   onClose: () => void;
   selectedMeme: Meme | null;
   onSave: () => void;
-  setSelectedMeme: React.Dispatch<React.SetStateAction<Meme | null>>;
+  setSelectedMeme: Dispatch<SetStateAction<Meme | null>>;
 }
 
 function EditModal({
@@ -38,42 +37,35 @@ function EditModal({
       <ModalContent>
         <ModalHeader>Edit Meme</ModalHeader>
         <ModalBody>
-          <Input
-            label="ID"
-            value={selectedMeme?.id?.toString() || ""}
-            isDisabled
-          />
-          <Input
-            label="Name"
-            value={selectedMeme?.name || ""}
-            onChange={(e) => {
-              if (selectedMeme) {
-                setSelectedMeme({ ...selectedMeme, name: e.target.value });
-              }
-            }}
-          />
-          <Input
-            label="Image path or URL"
-            value={selectedMeme?.image || ""}
-            onChange={(e) => {
-              if (selectedMeme) {
-                setSelectedMeme({ ...selectedMeme, image: e.target.value });
-              }
-            }}
-          />
-          <Input
-            label="Likes"
-            type="number"
-            value={selectedMeme?.likes?.toString() || ""}
-            onChange={(e) => {
-              if (selectedMeme) {
-                setSelectedMeme({
-                  ...selectedMeme,
-                  likes: parseInt(e.target.value) || 0,
-                });
-              }
-            }}
-          />
+          {selectedMeme && (
+            <>
+              <Input
+                label="Name"
+                value={selectedMeme.name}
+                onChange={(e) =>
+                  setSelectedMeme({ ...selectedMeme, name: e.target.value })
+                }
+              />
+              <Input
+                label="Image"
+                value={selectedMeme.image}
+                onChange={(e) =>
+                  setSelectedMeme({ ...selectedMeme, image: e.target.value })
+                }
+              />
+              <Input
+                label="Likes"
+                type="number"
+                value={selectedMeme.likes.toString()}
+                onChange={(e) =>
+                  setSelectedMeme({
+                    ...selectedMeme,
+                    likes: parseInt(e.target.value) || 0,
+                  })
+                }
+              />
+            </>
+          )}
         </ModalBody>
         <ModalFooter>
           <Button color="danger" variant="light" onPress={onClose}>

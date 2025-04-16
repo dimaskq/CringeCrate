@@ -48,7 +48,7 @@ export default function RootLayout({
               <NavbarBrand>
                 <p className="font-bold text-inherit">CringeCrate</p>
               </NavbarBrand>
-              <NavbarContent className="hidden sm:flex gap-4" justify="center">
+              <NavbarContent className="sm:flex gap-4" justify="center">
                 <NavbarItem>
                   <NextLink href="/" passHref legacyBehavior>
                     <Link color="foreground">Table</Link>
