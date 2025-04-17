@@ -21,7 +21,7 @@
 
 ## Структура проєкту
 ```bash
-meme/
+
 ├── app/
 │   ├── layout.tsx
     ├── providers.tsx
@@ -45,7 +45,7 @@ meme/
 ## Встановлення та запуск
 
 ### Вимоги
-- Node.js (рекомендується версія 18 або вище)
+- Node.js
 - npm
 - Google Chrome (для тестування)
 
@@ -53,7 +53,6 @@ meme/
 1. **Клонування репозиторію**:
    ```bash
    git clone https://github.com/dimaskq/CringeCrate.git
-   cd meme
 # Встановлення залежностей:
 ```bash
 npm install
