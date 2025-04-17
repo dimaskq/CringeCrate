@@ -95,8 +95,13 @@ function MemeTable() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    setMemes(initialMemes);
-    Cookies.set("memes", JSON.stringify(initialMemes), { expires: 7 });
+    const savedMemes = Cookies.get("memes");
+    if (savedMemes) {
+      setMemes(JSON.parse(savedMemes));
+    } else {
+      setMemes(initialMemes);
+      Cookies.set("memes", JSON.stringify(initialMemes), { expires: 7 });
+    }
   }, []);
 
   const saveMemes = (updatedMemes: Meme[]) => {
